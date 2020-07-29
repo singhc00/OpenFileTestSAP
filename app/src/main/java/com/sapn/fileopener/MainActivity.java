@@ -30,34 +30,41 @@ public class MainActivity extends AppCompatActivity {
         InputStream inputStream = null;
         OutputStream outputStream = null;
 
-        //File destFile = getAssets().open("logo.jpg");
 
         try {
+            // Get the assets logo file Inputstream
             inputStream = getAssets().open("logo.jpg");
+
+            // Create a destination file in the cache directory which will be opened using an Intent
             destFile = new File(getCacheDir(), "/logo");
             String path = destFile.getPath();
+
+            // Get the output stream of the file
             outputStream = new FileOutputStream(destFile);
 
             byte[] buffer = new byte[4 * 1024]; // or other buffer size
             int read;
 
+            // Copy the Assets Input stream to the output stream
             while ((read = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, read);
             }
             outputStream.flush();
 
+
+            // Create a new intent to open the file
             Intent intent = new Intent("android.intent.action.VIEW", Uri.fromFile(destFile));
-            //if (this._mimeType != null) {
-                //Context context = AttachmentViewer.cordovaInterface.getActivity().getApplicationContext();
-                Uri contentUri = FileProvider.getUriForFile(getApplicationContext(), getApplicationContext().getPackageName() + ".OpenFile", destFile);
 
-                //Uri contentUri = FileProviderWithWorkaround.getUriForFile(getApplicationContext(), context.getPackageName() + ".KapselAttachmentViewer", destFile);
+            // Get the content uri
+            Uri contentUri = FileProvider.getUriForFile(getApplicationContext(), getApplicationContext().getPackageName() + ".OpenFile", destFile);
 
-                intent.setDataAndType(contentUri, "image/jpeg");
+            // Set the intent data type which in this case is image/jpeg
+            intent.setDataAndType(contentUri, "image/jpeg");
 
-            //}
-
+            // Add the Read flag
             intent.addFlags(1);
+
+            // Start the Activity using the intent
             startActivityForResult(intent, 1);
 
 
